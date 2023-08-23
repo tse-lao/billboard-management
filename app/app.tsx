@@ -101,7 +101,7 @@ let links = [
     name: "Dashboard",
   },
   {
-    href: "/billboard/a",
+    href: "/billboard",
     name: "billboard",
   },
 ];

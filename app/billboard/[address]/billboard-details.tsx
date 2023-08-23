@@ -7,6 +7,7 @@ interface BillboardDetailProps {
     size: string;
     name: string;
     description: string;
+    totalSupply: number;
     owner: string;
     startTime: number;
 }
@@ -15,11 +16,12 @@ const BillboardDetail: React.FC<BillboardDetailProps> = ({
     location,
     size,
     name,
+    totalSupply, 
     description,
     owner,
     startTime
 }) => {
-    const readableDate = new Date(startTime * 1000).toLocaleString();
+    const readableDate = new Date(startTime *1000).toLocaleString();
 
     return (
         <div className="p-6 bg-gray-300 rounded-lg shadow-md space-y-4">
@@ -34,6 +36,11 @@ const BillboardDetail: React.FC<BillboardDetailProps> = ({
                 <SizeIcon />
                 <p className="text-gray-700">{size}</p>
             </div>
+            <div className="flex items-center space-x-2">
+                <SizeIcon />
+                <p className="text-gray-700">{totalSupply}</p>
+            </div>
+            
             
             <p className="text-gray-600">{description}</p>
             

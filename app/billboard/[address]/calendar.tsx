@@ -10,7 +10,14 @@ interface Day {
   dayName: string;
 }
 
-export default function Calendar({ address }: { address: string }) {
+interface CalendarProps {
+  address: string;
+  startTime: number; // You can set this as required if necessary
+  maxDays: number; // Maximum days from startTime
+}
+
+
+export default function Calendar({ address, startTime, maxDays = 30 }: CalendarProps) {
   // State for the current month's Unix timestamp
   const [currentMonth, setCurrentMonth] = useState<number>(
     Math.floor(new Date().getTime() / 1000)
@@ -54,9 +61,33 @@ export default function Calendar({ address }: { address: string }) {
         dayName: "",
       });
     }
+    // Adjust for startTime
+    const startDate = new Date(startTime * 1000);
+
+    const startDay = startDate.getDate();
+    const startMonth = startDate.getMonth();
+    const startYear = startDate.getFullYear();
+    
+    if (year === startYear && month === startMonth) {
+      for (let i = 1; i < startDay; i++) {
+        days.push({
+          date: 0,
+          img: "",
+          timestamp: 0,
+          dayName: "",
+        });
+      }
+    }
+    
+    // Determine the first day to start populating
+    let daysCounter = 0;
+    let firstPopulatingDay = 1;
+    if (year === startYear && month === startMonth) {
+        firstPopulatingDay = startDay;
+    }
 
     // Add the actual days of the month
-    for (let i = 1; i <= daysInMonth; i++) {
+    for (let i = firstPopulatingDay; i <= daysInMonth && daysCounter < maxDays; i++) {
       const dayDate = new Date(year, month, i);
       const dayTimestamp = dayDate.getTime() / 1000;
       const dayOfWeek = dayDate.getDay();
@@ -69,8 +100,46 @@ export default function Calendar({ address }: { address: string }) {
         dayName: dayNames[dayNameIndex], // Adjusted for the new order of dayNames
       });
     }
+    daysCounter++;
 
     return days;
+  };
+  const isAtStart = () => {
+    const startDate = new Date(startTime * 1000);
+    const startMonth = startDate.getMonth();
+    const startYear = startDate.getFullYear();
+  
+    const currentDate = new Date(currentMonth * 1000);
+  
+    // Check if the current year and month are less than or equal to the start year and month
+    if (currentDate.getFullYear() < startYear || 
+        (currentDate.getFullYear() === startYear && currentDate.getMonth() <= startMonth)) {
+      return true;
+    }
+    
+    return false;
+  };
+  
+  const isAtEnd = () => {
+    const endDate = new Date((startTime + maxDays * 24 * 60 * 60) * 1000);  // Convert to JS timestamp
+    const endMonth = endDate.getMonth();
+    const endYear = endDate.getFullYear();
+    const endDay = endDate.getDate();
+  
+    const currentDate = new Date(currentMonth * 1000);
+    const currentDay = currentDate.getDate();
+    
+    // Check if the current year and month are greater than or equal to the end year and month
+    if (currentDate.getFullYear() > endYear || (currentDate.getFullYear() === endYear && currentDate.getMonth() > endMonth)) {
+      return true;
+    }
+    
+    // If they are the same month, check the day
+    if (currentDate.getFullYear() === endYear && currentDate.getMonth() === endMonth && currentDay >= endDay) {
+      return true;
+    }
+    
+    return false;
   };
 
   useEffect(() => {
@@ -122,16 +191,18 @@ export default function Calendar({ address }: { address: string }) {
   return (
     <div className="container mx-auto mt-12">
       <div className="mb-6 flex justify-center items-center">
-        <button
+      <button
           onClick={goToPreviousMonth}
-          className="mr-4 bg-blue-500 text-white px-4 py-2 rounded"
+          disabled={isAtStart}
+          className={`mr-4 bg-blue-500 text-white px-4 py-2 rounded ${isAtStart ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Previous
         </button>
         <h2 className="text-2xl font-bold">{currentMonthName}</h2>
         <button
           onClick={goToNextMonth}
-          className="ml-4 bg-blue-500 text-white px-4 py-2 rounded"
+          disabled={isAtEnd()}
+          className={`ml-4 bg-blue-500 text-white px-4 py-2 rounded ${isAtEnd() ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Next
         </button>

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 import AdDetail from "./ad-details";
 import BiddingItem from "./bidding-item";
 import { RecentBids } from "./recent-bids";
@@ -10,6 +11,17 @@ import { RecentBids } from "./recent-bids";
 Image;
 export default function AdSpace() {
   const params = useParams();
+  
+  useEffect(() => {
+    console.log(params);
+    const getBillboard = async () => {
+      const url = process.env.API_URL || "http://localhost:4000";
+      const response = await fetch(`${url}/billboard/details/${params.address}/${params.timestamp}`);
+      const data = await response.json();
+      console.log(data);
+    }
+    getBillboard();
+  }, [params]);
 
   const adData = {
     address: "Downtown",
