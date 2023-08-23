@@ -11,6 +11,7 @@ interface AdDetailProps {
   timestamp: number;
   description: string;
   owner: string;
+  adOwner: string;
   size: string;
 }
 
@@ -20,6 +21,7 @@ const AdDetail: React.FC<AdDetailProps> = ({
     timestamp,
     description,
     owner,
+    adOwner,
     size
 }) => {
 
@@ -37,7 +39,7 @@ const AdDetail: React.FC<AdDetailProps> = ({
           <div className="ml-4 space-y-1">
             <p className="text-sm font-medium text-muted-foreground leading-none">Owned By</p>
             <p className="text-sm ">
-                {owner}
+                {adOwner}
             </p>
           </div>
         </div>
