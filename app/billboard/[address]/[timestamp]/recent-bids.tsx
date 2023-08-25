@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { roundAmount } from "@/lib/utils";
+import { roundAmount, truncateMiddle } from "@/lib/utils";
 import { formatEther } from 'viem';
 
 export function RecentBids({ bids }: { bids: any[] }) {
@@ -15,7 +15,7 @@ export function RecentBids({ bids }: { bids: any[] }) {
             <div className="ml-4 space-y-1">
               <p className="text-sm font-medium leading-none">Bid made by</p>
               <p className="text-sm text-muted-foreground">
-                {bid.bidder}
+                {truncateMiddle(bid.bidder, 24)}
               </p>
             </div>
             <div className="ml-auto font-medium">{roundAmount(parseInt(formatEther(bid.bidAmount)))}</div>

@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -190,35 +191,33 @@ export default function Calendar({ address, startTime, maxDays = 30 }: CalendarP
 
   return (
     <div className="container mx-auto mt-12">
-      <div className="mb-6 flex justify-center items-center">
-      <button
+      <div className="flex justify-between items-center mb-6">
+      <Button
           onClick={goToPreviousMonth}
           disabled={isAtStart()}
-          className={`mr-4 bg-blue-500 text-white px-4 py-2 rounded ${isAtStart() ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Previous
-        </button>
+        </Button>
         <h2 className="text-2xl font-bold">{currentMonthName}</h2>
-        <button
+        <Button
           onClick={goToNextMonth}
           disabled={isAtEnd()}
-          className={`ml-4 bg-blue-500 text-white px-4 py-2 rounded ${isAtEnd() ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Next
-        </button>
+        </Button>
       </div>
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 gap-2 items-end">
         {days.map((day, index) => (
-          <div key={index} className="p-4">
+          <div key={index} className="">
             {day.date > 0 && (
-              <Link href={`/billboard/${address}/${day.timestamp}`}>
-                <h2 className="text-center">
+              <Link href={`/billboard/${address}/${day.timestamp}`} className="my-2">
+                <h2 className="text-center text-xs text-gray-600 overflow-auto flex-wrap">
                   {day.dayName}, {day.date}
                 </h2>
                 <Image
                   src={day.img}
                   alt={`Image for day ${day.date}`}
-                  className="mt-4 w-full h-32 object-cover rounded-md"
+                  className="mt-4 w-full h-32 object-cover rounded-md hover:outline hover:outline-green-300"
                   objectFit="cover"
                   width="400"
                   height="100"

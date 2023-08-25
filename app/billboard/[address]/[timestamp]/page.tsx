@@ -26,7 +26,7 @@ import { returnTimestamp } from "@/lib/utils";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { parseEther } from 'viem';
+import { parseEther } from "viem";
 import { Address, useAccount, useContractWrite } from "wagmi";
 import AdContent from "./ad-content";
 import AdDetail from "./ad-details";
@@ -39,6 +39,7 @@ export default function AdSpace() {
   const [isLoading, setIsLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState("0");
   const [isOwner, setIsOwner] = useState(false);
+  const [display, setDisplay] = useState("");
   const [auctionData, setAuctionData] = useState<any>({
     price: 0,
     time: 86400,
@@ -55,22 +56,19 @@ export default function AdSpace() {
     startTime: 1678645200, // Example Unix timestamp
     content: `https://images.unsplash.com/photo-1560196327-cca0a731441b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80`,
   });
-
-  const {
-    data,
-    write,
-    isLoading: startingAuction,
-    isSuccess,
-    isError,
-  } = useContractWrite({
+  const { write: acceptContent, isLoading: acceptingContent } =
+    useContractWrite({
+      address: params.address as Address,
+      abi: ABI.mumbai.billboardSpace,
+      functionName: "approveAdContent",
+      args: [params.timestamp],
+    });
+  const { write, isLoading: startingAuction } = useContractWrite({
     address: params.address as Address,
     abi: ABI.mumbai.billboardSpace,
     functionName: "startAuction",
   });
-  const {
-    write: bid,
-    isLoading: bidding,
-  } = useContractWrite({
+  const { write: bid, isLoading: bidding } = useContractWrite({
     address: params.address as Address,
     abi: ABI.mumbai.billboardSpace,
     functionName: "placeBid",
@@ -84,32 +82,37 @@ export default function AdSpace() {
       );
       const data = await response.json();
 
-    
       if (data.adContent == "") {
         setAdData({
           ...data,
           display:
             "https://images.unsplash.com/photo-1528402671825-9a525ab8b5b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80",
         });
+        setDisplay(
+          "https://images.unsplash.com/photo-1528402671825-9a525ab8b5b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+        );
       } else {
         setAdData({
           ...data,
-          display: data.adContent,
+          display: `https://ipfs.io/ipfs/${data.adContent}`,
         });
+        setDisplay(`https://ipfs.io/ipfs/${data.adContent}`);
       }
-      
 
       console.log(data);
 
       if (data.owner == address) {
         setIsOwner(true);
+        if (data.pendingContent != "") {
+          setDisplay(`https://ipfs.io/ipfs/${data.pendingContent}`);
+        }
       }
+      setIsLoading(false);
     };
 
     if (address && params.address && params.timestamp && isLoading) {
       setIsLoading(true);
       getBillboard();
-      setIsLoading(false);
     }
     console.log(params, address);
   }, [params, address, isLoading]);
@@ -134,26 +137,38 @@ export default function AdSpace() {
       price: e.target.value,
     });
   };
-  
 
   if (isLoading) return <Loading />;
   return (
-    <main className="grid grid-cols-4 gap-8">
-      <div className="col-span-2 flex flex-col justify-center items-center gap-8 px-12">
-        <AdContent isOwner={isOwner} display={adData.display} size={adData.size} 
-            contract={params.address.toString()}
-            timestamp={params.timestamp.toString()}
+    <main className="grid md:grid-cols-4 gap-8">
+      <div className="col-span-2 flex flex-col justify-center items-center gap-8 px-8">
+        <AdContent
+          isOwner={isOwner}
+          display={display}
+          size={adData.size}
+          contract={params.address.toString()}
+          timestamp={params.timestamp.toString()}
         />
 
-        {adData.auction?.active ? (
-            <BiddingItem
-              auction={adData?.auction}
-              owner={adData?.owner}
-              contract={params.address.toString()}
-              timestamp={params.timestamp.toString()}
+        {isOwner && adData.pendingContent && (
+          <Button onClick={() => acceptContent()} disabled={acceptingContent}>
+            {acceptingContent ? (
+              <span className="flex gap-2">
+                <ReloadIcon className="animate-spin" /> Accepting..
+              </span>
+            ) : (
+              "Accept Pending"
+            )}
+          </Button>
+        )}
 
-            />
-           
+        {adData.auction?.active ? (
+          <BiddingItem
+            auction={adData?.auction}
+            owner={adData?.owner}
+            contract={params.address.toString()}
+            timestamp={params.timestamp.toString()}
+          />
         ) : adData?.price > 0 ? (
           <Button variant={"secondary"} className="w-1/2 py-6 ">
             Buy Now
@@ -231,29 +246,47 @@ export default function AdSpace() {
         ) : (
           <Button>Already sold</Button>
         )}
-        
-        {adData.auction?.active && adData.auction?.endTime > returnTimestamp() && (
-           <div className="flex justify-between gap-4 w-full">
-           <Input className="w-1/2 py-6 " placeholder="Enter your bid" 
-           type="number" 
-           value={bidAmount}
-           onChange={(e) => setBidAmount(e.target.value)}
-            min={adData.auction?.highestBid + 0.05}
-           />
-           <Button 
-              className="w-1/2 py-6 " 
-              onClick={() => bid({args: [params.timestamp], value: parseEther(bidAmount) })}
-              disabled={bidding}
-            >
 
-                {bidding ? <span><ReloadIcon className="animate-spin" /> Loading.. </span> : "Place Bid"}</Button>
-         </div>
-         )}
+        {adData.auction?.active &&
+          adData.auction?.endTime > returnTimestamp() && (
+            <div className="flex justify-between gap-4 w-full">
+              <Input
+                className="w-1/2 py-6 "
+                placeholder="Enter your bid"
+                type="number"
+                value={bidAmount}
+                onChange={(e) => setBidAmount(e.target.value)}
+                min={adData.auction?.highestBid + 0.05}
+              />
+              <Button
+                className="w-1/2 py-6 "
+                onClick={() =>
+                  bid({
+                    args: [params.timestamp],
+                    value: parseEther(bidAmount),
+                  })
+                }
+                disabled={bidding}
+              >
+                {bidding ? (
+                  <span>
+                    <ReloadIcon className="animate-spin" /> Loading..{" "}
+                  </span>
+                ) : (
+                  "Place Bid"
+                )}
+              </Button>
+            </div>
+          )}
       </div>
       <div className="col-span-2 flex flex-col gap-4 p-8 justify-center">
-        <AdDetail {...adData} contract={params.address} timestamp={params.timestamp} />
+        <AdDetail
+          {...adData}
+          contract={params.address}
+          timestamp={params.timestamp}
+        />
         <div className="">
-          <Card className="col-span-3 bg-gray-100 ">
+          <Card className="col-span-3 bg-gray-100 max-w-[500px]">
             <CardHeader>
               <CardTitle>Latest Bids</CardTitle>
             </CardHeader>

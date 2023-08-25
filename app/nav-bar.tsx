@@ -13,7 +13,7 @@ export default function Navbar({ links }: { links: any }) {
     const pathname = usePathname();
     
   return (
-    <Disclosure as="nav" className="bg-gray-50 shadow m-2 rounded-lg">
+    <Disclosure as="nav" className="m-2 rounded-lg">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -29,9 +29,9 @@ export default function Navbar({ links }: { links: any }) {
                     <Link
                       key={index}
                       href={link.href}
-                      className={`inline-flex items-center border-b-2 
-                      ${pathname == link.href ? 'border-indigo-500':'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-400'}  
-                      px-1 pt-1 text-md font-medium text-gray-300`}
+                      className={`inline-flex items-center border-b-2 capitalize 
+                      ${pathname == link.href ? 'border-green-500':'border-transparent text-gray-900 hover:border-green-400 hover:text-green-400'}  
+                      px-1 pt-1 text-md font-medium text-gray-900`}
                     >
                       {link.name}
                     </Link>
@@ -75,7 +75,7 @@ export default function Navbar({ links }: { links: any }) {
                 as="a"
                 href={link.href}
                 className={`block border-l-4  bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium 
-                ${pathname == link.href ? 'border-indigo-500 text-indigo-700': 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'}  
+                ${pathname == link.href ? 'border-indigo-500 text-green-700': 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'}  
                 `}
               >
                 {link.name}

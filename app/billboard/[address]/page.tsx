@@ -2,7 +2,7 @@
 import Loading from '@/components/core/loading/loading-icon';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import BillboardDetail from './billboard-details';
+import AdDetail from './[timestamp]/ad-details';
 import Calendar from "./calendar";
 
 
@@ -45,18 +45,20 @@ export default function BillBoardSpace() {
     if(loading) return <Loading />;
   return (
     <main>
-      <div className="grid grid-cols-3">
-            <div className="col-span-3 mx-12 px-12">
+      <div className="p-12">
+            <div className="grid grid-cols-2">
               {billboardData &&            
-                <BillboardDetail {...billboardData} />
+                <AdDetail {...billboardData} adOwner={billboardData.owner}/>
               }
-
+              
+              <div>
+                
+              </div>
             </div>
             <div className="col-span-3">
-                {billboardData?.totalSupply > 0 &&
+                {billboardData && billboardData.totalSupply > 0 &&
                   <Calendar address={params.address.toString()} startTime={billboardData?.startTime} maxDays={billboardData?.totalSupply}/>    
                 }
-              
             </div>
       </div>
     </main>

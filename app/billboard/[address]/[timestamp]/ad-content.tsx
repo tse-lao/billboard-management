@@ -13,6 +13,8 @@ import { Address, useContractWrite } from "wagmi";
 export default function AdContent({display, isOwner, size, contract, timestamp}: any) {
     const [mediaSource, setMediaSource] = useState<any>();
     const [loading, setLoading] = useState(false);
+    const [width, setWidth] = useState(300);
+    const [height, setHeight] = useState(100);
     const {write, isLoading, isSuccess}= useContractWrite({
         address: contract as Address,
         abi: ABI.mumbai.billboardSpace,
@@ -24,8 +26,14 @@ export default function AdContent({display, isOwner, size, contract, timestamp}:
         // You can now use this file for uploading or any other purpose
     };
     
-    const width = size.split("x")[0] || 300;
-    const height = (size.split("x")[1] || 100).trim();
+ 
+    useEffect(() => {
+        if(size){
+            const [width, height] = size.split("x");
+            setWidth(parseInt(width));
+            setHeight(parseInt(height));
+        }
+    }, [size])
     
     
     const changeContent = async() => {
@@ -48,16 +56,15 @@ export default function AdContent({display, isOwner, size, contract, timestamp}:
         }
     }, [isSuccess])
   return (
-    <main>
+    <main className="w-full relative aspect-[400/400] bg-gray-600 border rounded-md">
          {isOwner ? (
           <Dialog>
           <DialogTrigger asChild>
           <Image
             src={display}
             alt="rubbish"
-            width={height}
-            height={width}
-            className="rounded-lg hover:opacity-50 cursor-pointer border-2 hover:border-green-300"
+            fill={true}
+            className={`rounded-lg hover:opacity-50 cursor-pointer border-2 hover:border-green-300  object-scale-down`}
 
           />
           </DialogTrigger>
@@ -83,9 +90,8 @@ export default function AdContent({display, isOwner, size, contract, timestamp}:
           <Image
             src={display}
             alt="adContent image"
-            width={300}
-            height={500}
-            className="rounded-lg"
+            className={`rounded-lg object-scale-down `}
+            fill={true}
           />
         )}
     </main>

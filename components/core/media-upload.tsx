@@ -36,7 +36,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ onFileSelected, width, he
       className="media-uploader relative w-full border rounded-md border-dashed border-gray-300 flex items-center justify-center cursor-pointer"
       onClick={() => document.getElementById("media-input")?.click()}
     >
-      <div className={`aspect-[400/400] w-full flex items-center justify-center`}>
+      <div className={`aspect-[${width}/${height}] w-full flex items-center justify-center`}>
         {mediaType === "image" && mediaSource && (
           <Image
             src={mediaSource}
