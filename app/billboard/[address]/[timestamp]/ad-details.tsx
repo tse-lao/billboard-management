@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
-import { SizeIcon } from "@radix-ui/react-icons";
-import { MapIcon, TimerIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { formatDateFromTimestamp } from "@/lib/utils";
+import { MapIcon, Scaling, TimerIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -12,6 +12,7 @@ interface AdDetailProps {
   description: string;
   owner: string;
   adOwner: string;
+  location: string;
   size: string;
 }
 
@@ -19,9 +20,8 @@ const AdDetail: React.FC<AdDetailProps> = ({
     name,
     contract,
     timestamp,
-    description,
-    owner,
     adOwner,
+    location, 
     size
 }) => {
 
@@ -44,23 +44,23 @@ const AdDetail: React.FC<AdDetailProps> = ({
           </div>
         </div>
         <div className="grid grid-cols-3 gap-8">
-            <Card>
-                <CardContent className="flex flex-col gap-3 items-center justify-center place-content-center ">
-                    <MapIcon />
-                    <p className="text-gray-600">{size}</p>
-                </CardContent>
+        <Card className="flex justify-center items-center">
+                <div className="flex flex-col gap-3 items-center justify-center place-content-center px-4 ">
+                    <MapIcon className="text-green-800"/>
+                    <p className="text-gray-600 text-sm wrap">{location}</p>
+                </div>
             </Card>
-            <Card>
-                <CardContent className="flex flex-col gap-3 items-center justify-center">
-                    <TimerIcon />
-                    <p className="text-gray-600">{timestamp}</p>
-                </CardContent>
+            <Card className="flex justify-center items-center">
+                <div className="flex flex-col gap-3 items-center justify-center">
+                    <TimerIcon className="text-green-800" />
+                    <p className="text-gray-600 text-sm">{formatDateFromTimestamp(timestamp)}</p>
+                </div>
             </Card>
-            <Card>
-                <CardContent className="flex flex-col gap-3 items-center justify-center center">
-                    <SizeIcon />
-                    <p className="text-gray-600">{size}</p>
-                </CardContent>
+            <Card className="flex justify-center items-center cotnent-center ">
+                <div className="flex flex-col gap-3 justify-center items-center my-4">
+                    <Scaling className="text-green-800"/>
+                    <p className="text-gray-600 text-sm">{size}</p>
+                </div>
             </Card>
         </div>
     </main>

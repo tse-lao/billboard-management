@@ -22,12 +22,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ABI } from "@/constants";
+import { returnTimestamp } from "@/lib/utils";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { parseEther } from 'viem';
 import { Address, useAccount, useContractWrite } from "wagmi";
+import AdContent from "./ad-content";
 import AdDetail from "./ad-details";
 import BiddingItem from "./bidding-item";
 import { RecentBids } from "./recent-bids";
@@ -83,6 +84,7 @@ export default function AdSpace() {
       );
       const data = await response.json();
 
+    
       if (data.adContent == "") {
         setAdData({
           ...data,
@@ -95,6 +97,7 @@ export default function AdSpace() {
           display: data.adContent,
         });
       }
+      
 
       console.log(data);
 
@@ -131,34 +134,24 @@ export default function AdSpace() {
       price: e.target.value,
     });
   };
+  
 
   if (isLoading) return <Loading />;
   return (
     <main className="grid grid-cols-4 gap-8">
       <div className="col-span-2 flex flex-col justify-center items-center gap-8 px-12">
-        {isOwner ? (
-          <Image
-            src={adData.display}
-            alt={adData.name}
-            width={300}
-            height={500}
-            className="rounded-lg"
-          />
-        ) : (
-          <Image
-            src={adData?.display}
-            alt={adData?.name}
-            width={300}
-            height={500}
-            className="rounded-lg"
-          />
-        )}
+        <AdContent isOwner={isOwner} display={adData.display} size={adData.size} 
+            contract={params.address.toString()}
+            timestamp={params.timestamp.toString()}
+        />
 
         {adData.auction?.active ? (
             <BiddingItem
-              bid={adData?.auction?.highestBid}
-              status={1}
-              endTime={adData?.auction?.endTime}
+              auction={adData?.auction}
+              owner={adData?.owner}
+              contract={params.address.toString()}
+              timestamp={params.timestamp.toString()}
+
             />
            
         ) : adData?.price > 0 ? (
@@ -239,7 +232,7 @@ export default function AdSpace() {
           <Button>Already sold</Button>
         )}
         
-        {adData.auction?.active && (
+        {adData.auction?.active && adData.auction?.endTime > returnTimestamp() && (
            <div className="flex justify-between gap-4 w-full">
            <Input className="w-1/2 py-6 " placeholder="Enter your bid" 
            type="number" 
@@ -258,14 +251,14 @@ export default function AdSpace() {
          )}
       </div>
       <div className="col-span-2 flex flex-col gap-4 p-8 justify-center">
-        <AdDetail {...adData} contract={params.address} />
+        <AdDetail {...adData} contract={params.address} timestamp={params.timestamp} />
         <div className="">
           <Card className="col-span-3 bg-gray-100 ">
             <CardHeader>
               <CardTitle>Latest Bids</CardTitle>
             </CardHeader>
             <CardContent>
-              <RecentBids />
+              <RecentBids bids={adData.bids} />
             </CardContent>
           </Card>
         </div>

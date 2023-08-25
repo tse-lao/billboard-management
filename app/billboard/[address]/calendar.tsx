@@ -193,8 +193,8 @@ export default function Calendar({ address, startTime, maxDays = 30 }: CalendarP
       <div className="mb-6 flex justify-center items-center">
       <button
           onClick={goToPreviousMonth}
-          disabled={isAtStart}
-          className={`mr-4 bg-blue-500 text-white px-4 py-2 rounded ${isAtStart ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={isAtStart()}
+          className={`mr-4 bg-blue-500 text-white px-4 py-2 rounded ${isAtStart() ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Previous
         </button>
