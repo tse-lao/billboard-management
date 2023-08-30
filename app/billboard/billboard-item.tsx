@@ -10,7 +10,9 @@ interface BillboardItemProps {
 const BillboardItem: FC<BillboardItemProps> = ({ data }) => {
     
     if(data.adContent === "") {
-        data.adContent = "https://ipfs.io/ipfs/bafkreifv2eljq2nbmxvtlsqit3vqbggemjwvuui5gl7v2cbq7emiytraqa"
+        data.adContent = "https://ipfs.io/ipfs/bafkreihvqgz6vt5pqajpdi4pdguhfu4pf7owpy65c6kdfvck2pfbgi7vqm"
+    }else {
+      data.adContent = "https://ipfs.io/ipfs/" + data.adContent ;
     }
   return (  
     <main className="bg-gray-50 flex flex-col rounded-md items-center justify-center shadow border hover:border-green-300">

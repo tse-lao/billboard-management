@@ -206,11 +206,11 @@ export default function Calendar({ address, startTime, maxDays = 30 }: CalendarP
           Next
         </Button>
       </div>
-      <div className="grid grid-cols-7 gap-2 items-end">
+      <div className="grid grid-cols-7 gap-4 items-end">
         {days.map((day, index) => (
           <div key={index} className="">
             {day.date > 0 && (
-              <Link href={`/billboard/${address}/${day.timestamp}`} className="my-2">
+              <Link href={`/billboard/${address}/${day.timestamp}`} className="my-2 mb-4">
                 <h2 className="text-center text-xs text-gray-600 overflow-auto flex-wrap">
                   {day.dayName}, {day.date}
                 </h2>

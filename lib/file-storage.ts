@@ -12,3 +12,5 @@ export async function uploadContent(content: any) {
   const cid = await client.storeBlob(imageFile);
   return cid;
 }
+
+

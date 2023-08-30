@@ -12,7 +12,11 @@ interface AdDetailProps {
   description: string;
   owner: string;
   adOwner: string;
-  location: string;
+  location: {
+    lat: number;
+    long: number;
+  };
+
   size: string;
 }
 
@@ -47,11 +51,11 @@ const AdDetail: React.FC<AdDetailProps> = ({
           <p className="text-sm ">{adOwner}</p>
         </div>
       </div>
-      <div className="grid grid-cols-3  gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <Card className="flex justify-center items-center">
           <div className="flex flex-col gap-3 items-center justify-center place-content-center m-4 ">
             <MapIcon className="text-green-800" />
-            <p className="text-gray-600 text-sm text-wrap overflow-auto">{location}</p>
+            <p className="text-gray-600 text-sm text-wrap overflow-auto">{location.lat} || {location.long}</p>
           </div>
         </Card>
         <Card className="flex justify-center items-center">

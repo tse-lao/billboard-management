@@ -18,7 +18,7 @@ export function RecentBids({ bids }: { bids: any[] }) {
                 {truncateMiddle(bid.bidder, 24)}
               </p>
             </div>
-            <div className="ml-auto font-medium">{roundAmount(parseInt(formatEther(bid.bidAmount)))}</div>
+            <div className="ml-auto font-medium">{roundAmount(parseInt(formatEther(bid.bidAmount)) * 1000) / 1000}</div>
           </div>
         ))
       ) : (

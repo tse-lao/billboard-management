@@ -31,6 +31,7 @@ import { Address, useAccount, useContractWrite } from "wagmi";
 import AdContent from "./ad-content";
 import AdDetail from "./ad-details";
 import BiddingItem from "./bidding-item";
+import { ProfileInteractions } from "./profile-interactions";
 import { RecentBids } from "./recent-bids";
 
 export default function AdSpace() {
@@ -44,18 +45,8 @@ export default function AdSpace() {
     price: 0,
     time: 86400,
   });
-  const [adData, setAdData] = useState<any>({
-    address: "Downtown",
-    timestamp: 10000,
-    name: "Main Street Billboard",
-    description: "Visible from the main road.",
-    contract: "0xbe4e412ff7d16107f2e6ddf8e190627fa7b6bdc9",
-    size: "10x10",
-    ownerName: "John Doe",
-    owner: "0xbe4e412ff7d16107f2e6ddf8e190627fa7b6bdc9",
-    startTime: 1678645200, // Example Unix timestamp
-    content: `https://images.unsplash.com/photo-1560196327-cca0a731441b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80`,
-  });
+  const [adData, setAdData] = useState<any>();
+  
   const { write: acceptContent, isLoading: acceptingContent } =
     useContractWrite({
       address: params.address as Address,
@@ -291,7 +282,8 @@ export default function AdSpace() {
               <CardTitle>Latest Bids</CardTitle>
             </CardHeader>
             <CardContent>
-              <RecentBids bids={adData.bids} />
+              {adData.adOwner ===  address  ? <ProfileInteractions billboardAddress={params.address} timestamp={params.timestamp} />: <RecentBids bids={adData.bids} />}
+              
             </CardContent>
           </Card>
         </div>

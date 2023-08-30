@@ -15,7 +15,10 @@ interface BillboardData {
   size: string;
   ownerName: string;
   owner: string;
-  location: string;
+  location: {
+    lat: number, 
+    long:number,
+  };
   startTime: number;
   content: string;
   totalSupply: number;
@@ -48,7 +51,7 @@ export default function BillBoardSpace() {
       <div className="p-12">
             <div className="grid grid-cols-2">
               {billboardData &&            
-                <AdDetail {...billboardData} adOwner={billboardData.owner}/>
+                <AdDetail {...billboardData} adOwner={billboardData.owner} />
               }
               
               <div>
