@@ -2,14 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ABI, CONTRACTS } from "@/constants";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { useContractWrite } from "wagmi";
-
 export default function CreateBillboard() {
   const [formData, setFormData] = useState({
-    initialPrice: "10",
+    initialPrice: "0.005",
     baseURI: "https://api.dataponte.com",
     location: "52.370216,4.895168",
     size: "400x400",
@@ -50,40 +50,75 @@ export default function CreateBillboard() {
 
   return (
     <main>
-      <Card className="flex flex-col gap-4 p-24 bg-gray-50 rounded-md m-24">
+      <Card className="flex flex-col gap-4 p-4 bg-transparent rounded-md m-24">
         <CardHeader>
           <CardTitle>Create billboard</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-8">
-          <Input
-            type="text"
-            placeholder="Base URI"
-            onChange={handleChange}
-            name="baseURI"
-            value={formData.baseURI}
-          />
-          <Input
-            type="text"
-            placeholder="Size"
-            onChange={handleChange}
-            name="size"
-            value={formData.size}
-          />
-          <Input
-            type="text"
-            placeholder="Location"
-            onChange={handleChange}
-            name="location"
-            value={formData.location}
-          />
-          <Input
-            type="text"
-            placeholder="Name"
-            onChange={handleChange}
-            name="name"
-            value={formData.name}
-          />
-          <span className="hidden">{formData.currentTimestamp}</span>
+          <div>
+            <Label>Min Selling Price</Label>
+            <Input
+              type="text"
+              placeholder="Base URI"
+              onChange={handleChange}
+              name="initialPrice"
+              value={formData.initialPrice}
+            />
+          </div>
+
+          <div>
+            <Label>TokenURI</Label>
+            <Input
+              type="text"
+              placeholder="Base URI"
+              onChange={handleChange}
+              name="baseURI"
+              value={formData.baseURI}
+            />
+          </div>
+
+          <div>
+            <Label>Size (widthxheight)</Label>
+            <Input
+              type="text"
+              placeholder="Size"
+              onChange={handleChange}
+              name="size"
+              value={formData.size}
+            />
+          </div>
+
+          <div>
+            <Label>Location (lat, long)</Label>
+            <Input
+              type="text"
+              placeholder="Location"
+              onChange={handleChange}
+              name="location"
+              value={formData.location}
+            />
+          </div>
+
+          <div>
+            <Label>Billboard name</Label>
+            <Input
+              type="text"
+              placeholder="Name"
+              onChange={handleChange}
+              name="name"
+              value={formData.name}
+            />
+          </div>
+          <div>
+            <Label>Current timestamp name</Label>
+            <Input
+              type="text"
+              placeholder="Name"
+              name="timestmap"
+              disabled
+              value={formData.currentTimestamp}
+            />
+          </div>
 
           <Button
             variant="secondary"
@@ -91,6 +126,7 @@ export default function CreateBillboard() {
             onClick={() => {
               write({
                 args: [
+                  //parseEther(formData.initialPrice),
                   formData.baseURI,
                   formData.location,
                   formData.size,
@@ -102,7 +138,8 @@ export default function CreateBillboard() {
           >
             {isLoading ? (
               <span className="flex gap-4">
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Creating Billboard...
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Creating
+                Billboard...
               </span>
             ) : isSuccess ? (
               "Created"

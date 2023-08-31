@@ -22,10 +22,7 @@ export default function GetAllBillboards() {
               billboards.map((billboard: any, index: number) => (
                 <BillboardItem data={billboard} key={index} />
               ))}
-                 {billboards.length > 0 &&
-              billboards.map((billboard: any, index: number) => (
-                <BillboardItem data={billboard} key={index} />
-              ))}
+               
     </main>
   );
 }

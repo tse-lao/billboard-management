@@ -13,7 +13,7 @@ export default function AdBalance() {
   return (
     <div>
       <Button 
-        onClick={write()}
+        onClick={() => {write()}}
          disabled={isLoading}
         >
             {isLoading  ? <span className="flex gap-4"><ReloadIcon className="animate-spin mr-2" /> Deposiing</span>: "Deposit Tokens"}    
